@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        arch: [arm,x86]
+        arch: [arm,x86,mmips]
         channel: [stable]
     env:
       TZ: 'Asia/Shanghai'
@@ -88,6 +88,9 @@ jobs:
         elif [ "${{ matrix.arch }}" == "arm" ]; then
           ARCH='-arm'
           echo "ARCH=$ARCH" >> $GITHUB_ENV
+        elif [ "${{ matrix.arch }}" == "mmips" ]; then
+          ARCH='-mmips'
+          echo "ARCH=$ARCH" >> $GITHUB_ENV
         fi
         sudo apt-get update > /dev/null
 
@@ -132,6 +135,8 @@ jobs:
           sudo wget -O cpython.tar.gz -nv https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.11.10+20241016-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz
         elif [ "${{ matrix.arch }}" == "arm" ]; then
           sudo wget -O cpython.tar.gz -nv https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.11.10+20241016-armv7-unknown-linux-gnueabi-install_only_stripped.tar.gz
+        else
+          exit 0
         fi
         sudo tar -xf cpython.tar.gz
         sudo rm cpython.tar.gz
@@ -274,10 +279,12 @@ jobs:
         do
             sudo -E python3 ./npk.py sign $npk_file $npk_file
         done
-        sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./option-$LATEST_VERSION$ARCH.npk option ./option.sfs -desc="busybox"
-        sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./python3-$LATEST_VERSION$ARCH.npk python3 ./python3.sfs -desc="python 3.11.9"
-        sudo cp ./option-$LATEST_VERSION$ARCH.npk ./all_packages/
-        sudo cp ./python3-$LATEST_VERSION$ARCH.npk ./all_packages/
+        if [ "${{ matrix.arch }}" == "arm" ]; then
+          sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./option-$LATEST_VERSION$ARCH.npk option ./option.sfs -desc="busybox"
+          sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./python3-$LATEST_VERSION$ARCH.npk python3 ./python3.sfs -desc="python 3.11.9"
+          sudo cp ./option-$LATEST_VERSION$ARCH.npk ./all_packages/
+          sudo cp ./python3-$LATEST_VERSION$ARCH.npk ./all_packages/
+        fi
         sudo -E python3 patch.py npk routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk
         sudo zip routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.zip routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk
         sudo cp routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk ./all_packages/
