@@ -276,6 +276,8 @@ jobs:
         done
         sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./option-$LATEST_VERSION$ARCH.npk option ./option.sfs -desc="busybox"
         sudo -E python3 npk.py create ./all_packages/gps-$LATEST_VERSION$ARCH.npk ./python3-$LATEST_VERSION$ARCH.npk python3 ./python3.sfs -desc="python 3.11.9"
+        sudo cp ./option-$LATEST_VERSION$ARCH.npk ./all_packages/
+        sudo cp ./python3-$LATEST_VERSION$ARCH.npk ./all_packages/
         sudo -E python3 patch.py npk routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk
         sudo zip routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.zip routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk
         sudo cp routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk ./all_packages/
