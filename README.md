@@ -8,3 +8,6 @@
 
 
 ## If the original author of the repository is willing to accept a merge for armhf/mmips, I would be happy to submit a PR.
+
+## 在本仓库下载的固件，可以前往该网站自行生成key [keygen](https://keygen.fjrcn.com/)
+## generate key for firmware downloaded from the repo [keygen](https://keygen.fjrcn.com/)
