@@ -46,7 +46,7 @@ jobs:
         channel: [stable,testing]
     env:
       TZ: 'Asia/Shanghai'
-      LATEST_VERSION: "6.49.13"
+      LATEST_VERSION: ""
       ARCH: ""
 
     steps:
